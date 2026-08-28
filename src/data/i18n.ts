@@ -149,7 +149,7 @@ export const DICTIONARY: Record<Language, TranslationDictionary> = {
     initiatives: {
       tag: 'In The Foundry',
       title: 'Current Initiatives',
-      lead: 'Curated active developments, stable utilities, and commercial systems across the ecosystem.'
+      lead: 'Selected initiatives currently taking shape in the foundry.'
     },
     registry: {
       tag: 'Ecosystem Index',
@@ -265,7 +265,7 @@ export const DICTIONARY: Record<Language, TranslationDictionary> = {
     initiatives: {
       tag: 'Dalam Ruang Cipta',
       title: 'Inisiatif Saat Ini',
-      lead: 'Karya pilihan dalam pengembangan aktif, sistem operasional, dan teknologi komersial di seluruh ekosistem.'
+      lead: 'Inisiatif pilihan yang sedang dirancang dan dikembangkan di dalam ruang cipta.'
     },
     registry: {
       tag: 'Daftar Inventaris Ekosistem',
