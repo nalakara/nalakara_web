@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import { LifecycleStatus } from '@/types';
+import { useLanguage } from '@/context/LanguageContext';
 import styles from './StatusBadge.module.css';
 
 interface StatusBadgeProps {
@@ -15,10 +18,12 @@ const STATUS_CONFIG: Record<LifecycleStatus, { label: string; className: string 
 };
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
+  const { language } = useLanguage();
   const config = STATUS_CONFIG[status] || STATUS_CONFIG.idea;
+  const ariaLabel = language === 'id' ? `Tahapan status: ${config.label}` : `Lifecycle status: ${config.label}`;
 
   return (
-    <span className={`${styles.badge} ${config.className}`} aria-label={`Lifecycle status: ${config.label}`}>
+    <span className={`${styles.badge} ${config.className}`} aria-label={ariaLabel}>
       <span className={styles.dot} />
       {config.label}
     </span>

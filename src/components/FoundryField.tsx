@@ -1,13 +1,16 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import styles from './FoundryField.module.css';
 
 interface NodePoint {
   id: string;
   stageNumber: string;
-  label: string;
-  sublabel: string;
+  labelEn: string;
+  labelId: string;
+  sublabelEn: string;
+  sublabelId: string;
   baseX: number;
   baseY: number;
   phase: number;
@@ -17,14 +20,15 @@ interface NodePoint {
 }
 
 const STAGE_NODES: NodePoint[] = [
-  { id: 'idea', stageNumber: '01', label: 'Idea', sublabel: 'Concept', baseX: 0.16, baseY: 0.70, phase: 0.0, speed: 0.5, radius: 3.5, type: 'idea' },
-  { id: 'lab', stageNumber: '02', label: 'Lab', sublabel: 'Prototype', baseX: 0.35, baseY: 0.34, phase: 1.2, speed: 0.65, radius: 4.0, type: 'lab' },
-  { id: 'project', stageNumber: '03', label: 'Project', sublabel: 'Active System', baseX: 0.54, baseY: 0.64, phase: 2.5, speed: 0.45, radius: 4.5, type: 'project' },
-  { id: 'product', stageNumber: '04', label: 'Product', sublabel: 'Public Utility', baseX: 0.72, baseY: 0.30, phase: 3.8, speed: 0.6, radius: 5.0, type: 'product' },
-  { id: 'commercial', stageNumber: '05', label: 'Commercial', sublabel: 'Offering', baseX: 0.88, baseY: 0.56, phase: 5.0, speed: 0.35, radius: 5.5, type: 'commercial' }
+  { id: 'idea', stageNumber: '01', labelEn: 'Idea', labelId: 'Gagasan', sublabelEn: 'Concept', sublabelId: 'Konsep', baseX: 0.16, baseY: 0.70, phase: 0.0, speed: 0.5, radius: 3.5, type: 'idea' },
+  { id: 'lab', stageNumber: '02', labelEn: 'Lab', labelId: 'Lab', sublabelEn: 'Prototype', sublabelId: 'Prototipe', baseX: 0.35, baseY: 0.34, phase: 1.2, speed: 0.65, radius: 4.0, type: 'lab' },
+  { id: 'project', stageNumber: '03', labelEn: 'Project', labelId: 'Proyek', sublabelEn: 'Active System', sublabelId: 'Sistem Aktif', baseX: 0.54, baseY: 0.64, phase: 2.5, speed: 0.45, radius: 4.5, type: 'project' },
+  { id: 'product', stageNumber: '04', labelEn: 'Product', labelId: 'Produk', sublabelEn: 'Public Utility', sublabelId: 'Siap Pakai', baseX: 0.72, baseY: 0.30, phase: 3.8, speed: 0.6, radius: 5.0, type: 'product' },
+  { id: 'commercial', stageNumber: '05', labelEn: 'Commercial', labelId: 'Komersial', sublabelEn: 'Offering', sublabelId: 'Layanan', baseX: 0.88, baseY: 0.56, phase: 5.0, speed: 0.35, radius: 5.5, type: 'commercial' }
 ];
 
 export const FoundryField: React.FC = () => {
+  const { language, t } = useLanguage();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
@@ -199,15 +203,18 @@ export const FoundryField: React.FC = () => {
         ctx.lineTo(node.x, node.y + reticleSize);
         ctx.stroke();
 
-        // Stage Title Notation (e.g. 01 Idea)
+        const nodeLabel = language === 'id' ? node.labelId : node.labelEn;
+        const nodeSublabel = language === 'id' ? node.sublabelId : node.sublabelEn;
+
+        // Stage Title Notation (e.g. 01 Idea / 01 Gagasan)
         ctx.font = '600 9px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         ctx.fillStyle = 'rgba(244, 244, 246, 0.9)';
-        ctx.fillText(`${node.stageNumber} ${node.label}`, node.x + 10, node.y - 4);
+        ctx.fillText(`${node.stageNumber} ${nodeLabel}`, node.x + 10, node.y - 4);
 
-        // Stage Purpose Sublabel (e.g. Concept)
+        // Stage Purpose Sublabel (e.g. Concept / Konsep)
         ctx.font = '400 8px ui-monospace, SFMono-Regular, Menlo, monospace';
         ctx.fillStyle = 'rgba(161, 161, 170, 0.7)';
-        ctx.fillText(node.sublabel, node.x + 10, node.y + 7);
+        ctx.fillText(nodeSublabel, node.x + 10, node.y + 7);
       });
 
       if (!isReducedMotion) {
@@ -226,16 +233,16 @@ export const FoundryField: React.FC = () => {
       }
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isReducedMotion]);
+  }, [isReducedMotion, language]);
 
   return (
-    <div className={styles.wrapper} ref={containerRef} aria-label="Foundry Field: 5-Stage Evolutionary Model">
+    <div className={styles.wrapper} ref={containerRef} aria-label={t.foundryField.ariaLabel}>
       <div className={styles.headerBar}>
         <div className={styles.headerLeft}>
-          <span className={styles.headerLabel}>FOUNDRY FIELD</span>
+          <span className={styles.headerLabel}>{t.foundryField.fieldTag}</span>
         </div>
         <div className={styles.headerRight}>
-          <span>LIFECYCLE / 05 STAGES</span>
+          <span>{t.foundryField.stagesTag}</span>
         </div>
       </div>
 

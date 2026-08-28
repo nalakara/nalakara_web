@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import { EcosystemItem, LifecycleStatus } from '@/types';
+import { useLanguage } from '@/context/LanguageContext';
 import { StatusBadge } from './StatusBadge';
 import styles from './ItemCard.module.css';
 
@@ -7,22 +10,6 @@ interface ItemCardProps {
   item: EcosystemItem;
   featured?: boolean;
 }
-
-const CATEGORY_LABELS: Record<string, string> = {
-  software: 'Software',
-  'digital-system': 'Digital System',
-  'physical-good': 'Physical Instrument',
-  service: 'Studio Service',
-  experimental: 'Experimental Lab',
-};
-
-const ACCESS_LABELS: Record<string, string> = {
-  concept: 'Concept Drafting',
-  'private-alpha': 'Private Alpha',
-  'public-beta': 'Public Beta',
-  production: 'Public Utility',
-  commercial: 'Commercial Offering',
-};
 
 // Subtle geometric stage glyph connecting card to the 5-stage lifecycle model
 const StageGlyph: React.FC<{ status: LifecycleStatus }> = ({ status }) => {
@@ -69,8 +56,11 @@ const StageGlyph: React.FC<{ status: LifecycleStatus }> = ({ status }) => {
 };
 
 export const ItemCard: React.FC<ItemCardProps> = ({ item, featured = false }) => {
-  const categoryLabel = CATEGORY_LABELS[item.category] || item.category;
-  const accessLabel = ACCESS_LABELS[item.accessModel] || item.accessModel;
+  const { language, t } = useLanguage();
+  const categoryLabel = t.itemCard.categories[item.category] || item.category;
+  const accessLabel = t.itemCard.accessModels[item.accessModel] || item.accessModel;
+  const badgeLabel = item.commercial?.badgeLabel?.[language] || (item.commercial ? t.itemCard.commercialCandidate : undefined);
+  const actionLabel = item.commercial?.actionLabel?.[language] || t.itemCard.visit;
 
   return (
     <article 
@@ -88,14 +78,14 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, featured = false }) =>
         <h3 className={styles.title}>{item.name}</h3>
       </header>
 
-      <p className={styles.tagline}>{item.tagline}</p>
-      <p className={styles.description}>{item.description}</p>
+      <p className={styles.tagline}>{item.tagline[language]}</p>
+      <p className={styles.description}>{item.description[language]}</p>
 
       <footer className={styles.footer}>
         <div className={styles.accessTag}>
           <span className={styles.accessLabel}>{accessLabel}</span>
-          {item.commercial?.badgeLabel && (
-            <span className={styles.pricingBadge}>{item.commercial.badgeLabel}</span>
+          {badgeLabel && (
+            <span className={styles.pricingBadge}>{badgeLabel}</span>
           )}
         </div>
 
@@ -105,15 +95,15 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, featured = false }) =>
             target={item.isExternal ? '_blank' : '_self'}
             rel={item.isExternal ? 'noopener noreferrer' : undefined}
             className={styles.link}
-            aria-label={`Open ${item.name} in a new tab`}
+            aria-label={`${actionLabel} ${item.name}`}
           >
-            <span>{item.commercial?.actionLabel || 'Visit Initiative'}</span>
+            <span>{actionLabel}</span>
             <span className={styles.arrow} aria-hidden="true">↗</span>
           </a>
         ) : (
-          <span className={styles.disabledLink} title="In foundry development">
-            <span>In Foundry</span>
-            <span className={styles.lock} aria-hidden="true">—</span>
+          <span className={styles.disabledLink} title={t.itemCard.inFoundry}>
+            <span>{t.itemCard.inFoundry}</span>
+            <span className={styles.lock} aria-hidden="true">·</span>
           </span>
         )}
       </footer>

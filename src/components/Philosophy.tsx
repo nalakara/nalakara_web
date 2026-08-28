@@ -1,16 +1,21 @@
+'use client';
+
 import React from 'react';
 import { STUDIO_PRINCIPLES } from '@/data/ecosystem';
+import { useLanguage } from '@/context/LanguageContext';
 import styles from './Philosophy.module.css';
 
 export const Philosophy: React.FC = () => {
+  const { language, t } = useLanguage();
+
   return (
     <section className={styles.section} id="philosophy">
       <div className="container">
         <div className="section-header">
-          <span className="section-tag">Methodology</span>
-          <h2 className="section-title">Studio Principles</h2>
+          <span className="section-tag">{t.philosophy.tag}</span>
+          <h2 className="section-title">{t.philosophy.title}</h2>
           <p className={styles.lead}>
-            The architectural, design, and operational values that govern how we build.
+            {t.philosophy.lead}
           </p>
         </div>
 
@@ -18,8 +23,8 @@ export const Philosophy: React.FC = () => {
           {STUDIO_PRINCIPLES.map((principle) => (
             <div key={principle.number} className={styles.card}>
               <span className={styles.number}>{principle.number}</span>
-              <h3 className={styles.title}>{principle.title}</h3>
-              <p className={styles.description}>{principle.description}</p>
+              <h3 className={styles.title}>{principle.title[language]}</h3>
+              <p className={styles.description}>{principle.description[language]}</p>
             </div>
           ))}
         </div>

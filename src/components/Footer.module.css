@@ -15,7 +15,7 @@
 }
 
 .aboutBlock {
-  max-width: 380px;
+  max-width: 440px;
 }
 
 .brand {
@@ -30,7 +30,7 @@
   font-size: 0.875rem;
   color: var(--text-secondary);
   line-height: 1.5;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .location {
@@ -39,9 +39,18 @@
   color: var(--text-muted);
 }
 
+.origin {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 1rem;
+  padding-top: 0.875rem;
+  border-top: 1px dashed var(--border-subtle);
+}
+
 .linksBlock {
   display: flex;
-  gap: 3rem;
+  gap: 3.5rem;
 }
 
 .col {

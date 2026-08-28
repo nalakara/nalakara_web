@@ -1,21 +1,31 @@
+'use client';
+
 import React from 'react';
 import { STUDIO_META } from '@/data/ecosystem';
+import { useLanguage } from '@/context/LanguageContext';
 import styles from './Footer.module.css';
 
 export const Footer: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
     <footer className={styles.footer} id="about">
       <div className="container">
         <div className={styles.topRow}>
           <div className={styles.aboutBlock}>
             <div className={styles.brand}>{STUDIO_META.name}</div>
-            <p className={styles.tagline}>{STUDIO_META.tagline}</p>
-            <p className={styles.location}>Location: {STUDIO_META.location}</p>
+            <p className={styles.tagline}>{t.footer.desc}</p>
+            <p className={styles.location}>
+              {t.footer.locationLabel}: {t.footer.locationValue}
+            </p>
+            <p className={styles.origin}>
+              {t.footer.originFootnote}
+            </p>
           </div>
 
           <div className={styles.linksBlock}>
             <div className={styles.col}>
-              <h4 className={styles.colTitle}>Coordinates</h4>
+              <h4 className={styles.colTitle}>{t.footer.colCoordinates}</h4>
               <ul className={styles.linkList}>
                 <li>
                   <a href={`mailto:${STUDIO_META.email}`} className={styles.link}>
@@ -24,7 +34,7 @@ export const Footer: React.FC = () => {
                 </li>
                 <li>
                   <a 
-                    href="https://github.com/nalakara" 
+                    href={STUDIO_META.github} 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className={styles.link}
@@ -36,7 +46,7 @@ export const Footer: React.FC = () => {
             </div>
 
             <div className={styles.col}>
-              <h4 className={styles.colTitle}>Initiatives</h4>
+              <h4 className={styles.colTitle}>{t.footer.colInitiatives}</h4>
               <ul className={styles.linkList}>
                 <li>
                   <a href="#item-bros" className={styles.link}>
@@ -55,7 +65,7 @@ export const Footer: React.FC = () => {
                 </li>
                 <li>
                   <a href="#item-skill-factory" className={styles.link}>
-                    Skill Factory
+                    Nalakara Skill Factory
                   </a>
                 </li>
               </ul>
@@ -65,16 +75,16 @@ export const Footer: React.FC = () => {
 
         <div className={styles.bottomRow}>
           <div className={styles.colophon}>
-            <span>Next.js Static Architecture</span>
+            <span>{t.footer.rights}</span>
             <span className={styles.dot}>•</span>
-            <span>Hosted on Vercel</span>
+            <span>{t.footer.tagline}</span>
             <span className={styles.dot}>•</span>
-            <span>Domain: nalakara.com</span>
+            <span>nalakara.com</span>
           </div>
 
           <div className={styles.backToTop}>
             <a href="#top" className={styles.topLink}>
-              Back to top ↑
+              {t.footer.backToTop} ↑
             </a>
           </div>
         </div>

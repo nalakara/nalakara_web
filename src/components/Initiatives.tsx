@@ -1,19 +1,23 @@
+'use client';
+
 import React from 'react';
 import { ECOSYSTEM_INITIATIVES } from '@/data/ecosystem';
+import { useLanguage } from '@/context/LanguageContext';
 import { ItemCard } from './ItemCard';
 import styles from './Initiatives.module.css';
 
 export const Initiatives: React.FC = () => {
+  const { t } = useLanguage();
   const featuredItems = ECOSYSTEM_INITIATIVES.filter((item) => item.featured);
 
   return (
     <section className={styles.section} id="initiatives">
       <div className="container">
         <div className="section-header">
-          <span className="section-tag">In The Foundry</span>
-          <h2 className="section-title">Current Initiatives</h2>
+          <span className="section-tag">{t.initiatives.tag}</span>
+          <h2 className="section-title">{t.initiatives.title}</h2>
           <p className={styles.lead}>
-            Curated active developments, stable utilities, and commercial systems across the ecosystem.
+            {t.initiatives.lead}
           </p>
         </div>
 

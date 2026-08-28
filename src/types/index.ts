@@ -1,3 +1,10 @@
+export type Language = 'en' | 'id';
+
+export interface LocalizedString {
+  en: string;
+  id: string;
+}
+
 export type LifecycleStatus = 'idea' | 'lab' | 'project' | 'product' | 'commercial';
 
 export type InitiativeCategory =
@@ -16,15 +23,15 @@ export type AccessModel =
 
 export interface CommercialMetadata {
   pricingType: 'free' | 'one-time' | 'subscription' | 'custom';
-  badgeLabel?: string;
-  actionLabel?: string;
+  badgeLabel?: LocalizedString;
+  actionLabel?: LocalizedString;
 }
 
 export interface EcosystemItem {
   id: string;
   name: string;
-  tagline: string;
-  description: string;
+  tagline: LocalizedString;
+  description: LocalizedString;
   status: LifecycleStatus;
   category: InitiativeCategory;
   accessModel: AccessModel;
@@ -34,6 +41,12 @@ export interface EcosystemItem {
   order: number;
   updatedAt: string;
   commercial?: CommercialMetadata;
+}
+
+export interface StudioPrinciple {
+  number: string;
+  title: LocalizedString;
+  description: LocalizedString;
 }
 
 export type RegistryFilter = 'all' | 'building' | 'usable' | 'commercial';

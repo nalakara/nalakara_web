@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { LanguageProvider } from '@/context/LanguageContext';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -65,10 +66,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <a href="#main-content" className="skip-to-content">
-          Skip to main content
-        </a>
-        {children}
+        <LanguageProvider>
+          <a href="#main-content" className="skip-to-content">
+            Skip to main content
+          </a>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

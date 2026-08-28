@@ -1,0 +1,46 @@
+.toggleWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.langButton {
+  background: transparent;
+  border: none;
+  padding: 0.35rem 0.4rem;
+  min-height: 44px;
+  min-width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s ease;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.langButton:hover {
+  color: var(--text-primary);
+}
+
+.active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.divider {
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  padding: 0 0.1rem;
+}
+
+.langButton:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
