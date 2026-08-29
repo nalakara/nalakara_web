@@ -43,6 +43,9 @@ This document confirms the official **FREEZE** of **Phase 2B (Initiatives Manage
    - Isolated concurrent build processes.
 8. **Public Data Source Gap Diagnosis**:
    - Audited public frontend data path and confirmed that public frontend reading static constants is the intended baseline behavior until **Phase 5 (Public Source Migration & Cutover)**.
+9. **Production PKCE Callback Handler (`/auth/callback/route.ts`)**:
+   - Replaced client-side `page.tsx` with canonical Next.js App Router Server Route Handler (`route.ts`).
+   - Server-side code exchange via `createServerClient()` setting HTTP-only session cookies and cleanly redirecting to `/admin`.
 
 ---
 

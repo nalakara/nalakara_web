@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import styles from '../admin.module.css';
 
@@ -9,6 +9,20 @@ export default function AdminLoginPage() {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlError = params.get('error');
+      if (urlError) {
+        if (urlError.toLowerCase().includes('pkce') || urlError.toLowerCase().includes('storage') || urlError.toLowerCase().includes('verifier')) {
+          setError('Authentication error: The Magic Link must be opened in the same browser window where it was requested. Please request a new link and open it directly in this browser.');
+        } else {
+          setError(`Authentication notice: ${urlError}`);
+        }
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +39,7 @@ export default function AdminLoginPage() {
 
     try {
       const supabase = createClient();
-      const origin = window.location.origin || 'http://localhost:3005';
+      const origin = window.location.origin || 'http://localhost:7000';
 
       const { error: authError } = await supabase.auth.signInWithOtp({
         email: trimmedEmail,
@@ -44,7 +58,7 @@ export default function AdminLoginPage() {
           setError(authError.message || 'Unable to send magic link. Please check your configuration.');
         }
       } else {
-        setSuccess(`Magic link successfully sent to ${trimmedEmail}. Please check your inbox and click the authentication link to enter the Content Console.`);
+        setSuccess(`Magic link successfully sent to ${trimmedEmail}. Please check your inbox and click the authentication link. Note: Open or paste the link in this same browser to complete authentication.`);
       }
     } catch (err: any) {
       setError('A network error occurred while connecting to Supabase. Please check your internet connection.');
