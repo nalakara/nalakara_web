@@ -13,7 +13,23 @@ async function main() {
 
   const testId = 'brand-guidelines-system';
 
-  // 1. Check current record in DB
+  // 1. Ensure target test initiative exists in DB
+  await supabase
+    .from('initiatives')
+    .upsert({
+      id: testId,
+      slug: testId,
+      name: 'Brand Guidelines System',
+      category_id: 'service',
+      lifecycle_stage: 'product',
+      access_model: 'production',
+      tagline_en: 'Draft tagline',
+      tagline_id: 'Draf tagline',
+      description_en: 'Draft description',
+      description_id: 'Draf deskripsi',
+      publication_status: 'draft',
+    });
+
   const { data: initialRecord } = await supabase
     .from('initiatives')
     .select('*')
@@ -116,6 +132,9 @@ async function main() {
     }
     console.log(`   ✔ ${cItem.name} (${cItem.id}): ${cItem.publication_status}`);
   }
+
+  // Clean up test record so registry remains clean
+  await supabase.from('initiatives').delete().eq('id', testId);
 
   console.log('\n==================================================');
   console.log('ALL PUBLISH DIAGNOSIS & REGRESSION TESTS PASSED!');
