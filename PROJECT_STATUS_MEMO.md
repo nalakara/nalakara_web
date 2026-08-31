@@ -1,9 +1,9 @@
 # Nalakara Web v1.2 — Master Project Continuity Memo
 
 **Dokumen**: Master Project Continuity & Handover Memo  
-**Status Terakhir**: **Phase 4 (Publishing & On-Demand Revalidation) Selesai & Ter-Freeze**  
+**Status Terakhir**: **Phase 5 (Public Source Migration & Cutover) Selesai & Ter-Freeze**  
 **Git Branch**: `main` — Clean working tree  
-**Tanggal**: 31 Agustus 2026  
+**Tanggal**: 1 September 2026  
 **Target Utama Proyek**: Nalakara Content Console v1.2  
 
 ---
@@ -12,7 +12,7 @@
 
 Proyek **Nalakara Web v1.2** bertujuan membangun **Content Console (`/admin`)** internal yang aman, elegan, dan mandiri untuk pemilik studio (Owner) guna mengelola seluruh konten studio (Initiatives, Categories, Hero, Principles) secara dinamis menggunakan **Supabase PostgreSQL & Next.js App Router Server Actions**, tanpa mengorbankan performa publik yang 100% statis (*sub-second static edge serving*).
 
-Sampai saat ini, **Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 2C, Phase 3, dan Phase 4 telah selesai 100%** dan telah di-push ke branch `main`.
+Sampai saat ini, **Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 2C, Phase 3, Phase 4, dan Phase 5 telah selesai 100%** dan telah di-push ke branch `main`. Supabase kini resmi menjadi *canonical content source* bagi seluruh situs publik (`/`), didukung oleh Next.js edge caching (`unstable_cache`) dan on-demand revalidation (`revalidateTag`).
 
 ---
 
@@ -27,6 +27,8 @@ Sampai saat ini, **Phase 0, Phase 1, Phase 2A, Phase 2B, Phase 2C, Phase 3, dan 
 | **Phase 2C** | **Taxonomy & Studio Config** | **SELESAI** | Editor Category (`/admin/categories`), Hero Presentation Config (`/admin/hero`), dan Studio Principles Editor (`/admin/philosophy`). |
 | **Phase 3** | **Live Preview & Toolbar** | **SELESAI** | Rute `/admin/preview` terisolasi merender seluruh status Supabase live (termasuk draf dengan badge monospace `[DRAFT]`) menggunakan komponen publik asli, dilengkapi Floating Preview Toolbar bilingual (EN/ID). |
 | **Phase 4** | **Publishing & Revalidation** | **SELESAI** | Engine revalidasi on-demand terpusat (`src/lib/cache/revalidate.ts`) dengan cache tags domain terstandarisasi, penanganan error non-destruktif, integrasi penuh seluruh Server Action, dan kontrak data Phase 5 (`src/lib/data/contract.ts`). |
+| **Phase 5** | **Public Source Cutover** | **SELESAI** | Rute publik (`/`) dialihkan sepenuhnya ke Data Access Layer Supabase ter-cache (`getPublicEcosystemData()`). Draft & archived terisolasi ketat, caching edge aktif dengan instant purge, dan file statis v1.1 dipertahankan sebagai fail-safe fallback. |
+
 
 
 
