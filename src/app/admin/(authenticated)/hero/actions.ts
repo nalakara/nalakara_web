@@ -1,8 +1,8 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { Database } from '@/types/database';
+import { revalidateEcosystemCache } from '@/lib/cache/revalidate';
 
 type HeroMode = Database['public']['Enums']['hero_mode'];
 
@@ -97,10 +97,10 @@ export async function updateHeroConfigAction(formData: FormData) {
       return { success: false, error: updateError.message };
     }
 
-    revalidatePath('/admin/hero');
-    revalidatePath('/admin');
+    revalidateEcosystemCache({ domain: 'hero' });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'An unexpected error occurred.' };
   }
 }
+

@@ -1,8 +1,8 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { Database } from '@/types/database';
+import { revalidateEcosystemCache } from '@/lib/cache/revalidate';
 
 type PrincipleInsert = Database['public']['Tables']['studio_principles']['Insert'];
 type PrincipleUpdate = Database['public']['Tables']['studio_principles']['Update'];
@@ -106,8 +106,7 @@ export async function updatePrincipleAction(id: string, formData: FormData) {
       return { success: false, error: updateError.message };
     }
 
-    revalidatePath('/admin/philosophy');
-    revalidatePath('/admin');
+    revalidateEcosystemCache({ domain: 'principles', id });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'An unexpected error occurred.' };
@@ -169,8 +168,7 @@ export async function createPrincipleAction(formData: FormData) {
       return { success: false, error: insertError.message };
     }
 
-    revalidatePath('/admin/philosophy');
-    revalidatePath('/admin');
+    revalidateEcosystemCache({ domain: 'principles', id: rawId });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'An unexpected error occurred.' };
@@ -196,10 +194,10 @@ export async function deletePrincipleAction(id: string) {
       return { success: false, error: deleteError.message };
     }
 
-    revalidatePath('/admin/philosophy');
-    revalidatePath('/admin');
+    revalidateEcosystemCache({ domain: 'principles', id });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'An unexpected error occurred.' };
   }
 }
+

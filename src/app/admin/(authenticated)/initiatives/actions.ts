@@ -1,8 +1,8 @@
 'use server';
 
-import { revalidatePath, revalidateTag } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { LifecycleStage, AccessModel, PublicationStatus } from '@/types/database';
+import { revalidateEcosystemCache } from '@/lib/cache/revalidate';
 import { formatSlug } from './utils';
 
 export interface ActionResult<T = unknown> {
@@ -227,8 +227,7 @@ export async function createInitiativeAction(formData: FormData): Promise<Action
     return { success: false, error: `Failed to create initiative in database: ${insertErr.message}` };
   }
 
-  revalidatePath('/admin/initiatives');
-  revalidatePath('/admin');
+  revalidateEcosystemCache({ domain: 'initiatives', id });
 
   return { success: true, data: { id } };
 }
@@ -331,9 +330,7 @@ export async function updateInitiativeDraftAction(id: string, formData: FormData
     return { success: false, error: `Failed to save draft: ${updateErr.message}` };
   }
 
-  revalidatePath('/admin/initiatives');
-  revalidatePath(`/admin/initiatives/${id}`);
-  revalidatePath('/admin');
+  revalidateEcosystemCache({ domain: 'initiatives', id });
 
   return { success: true };
 }
@@ -477,15 +474,7 @@ export async function publishInitiativeAction(id: string, formData: FormData): P
     return { success: false, error: `Failed to publish initiative: ${updateErr.message}` };
   }
 
-  revalidatePath('/admin/initiatives');
-  revalidatePath(`/admin/initiatives/${id}`);
-  revalidatePath('/admin');
-  revalidatePath('/');
-  try {
-    revalidateTag('ecosystem');
-  } catch {
-    // Gracefully handle if tag revalidation is called outside static fetch context
-  }
+  revalidateEcosystemCache({ domain: 'initiatives', id });
 
   return { success: true };
 }
@@ -509,15 +498,7 @@ export async function archiveInitiativeAction(id: string): Promise<ActionResult>
     return { success: false, error: `Failed to archive initiative: ${updateErr.message}` };
   }
 
-  revalidatePath('/admin/initiatives');
-  revalidatePath(`/admin/initiatives/${id}`);
-  revalidatePath('/admin');
-  revalidatePath('/');
-  try {
-    revalidateTag('ecosystem');
-  } catch {
-    // Ignore tag error if not defined
-  }
+  revalidateEcosystemCache({ domain: 'initiatives', id });
 
   return { success: true };
 }
@@ -547,14 +528,8 @@ export async function deleteInitiativeAction(id: string): Promise<ActionResult> 
     return { success: false, error: `Failed to delete initiative: ${deleteErr.message}` };
   }
 
-  revalidatePath('/admin/initiatives');
-  revalidatePath('/admin');
-  revalidatePath('/');
-  try {
-    revalidateTag('ecosystem');
-  } catch {
-    // Ignore tag error
-  }
+  revalidateEcosystemCache({ domain: 'initiatives', id });
 
   return { success: true };
 }
+

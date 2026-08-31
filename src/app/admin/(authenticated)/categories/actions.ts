@@ -1,8 +1,8 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { Database } from '@/types/database';
+import { revalidateEcosystemCache } from '@/lib/cache/revalidate';
 
 type CategoryInsert = Database['public']['Tables']['categories']['Insert'];
 type CategoryUpdate = Database['public']['Tables']['categories']['Update'];
@@ -109,9 +109,7 @@ export async function createCategoryAction(formData: FormData) {
       return { success: false, error: insertError.message };
     }
 
-    revalidatePath('/admin/categories');
-    revalidatePath('/admin');
-    revalidatePath('/admin/initiatives');
+    revalidateEcosystemCache({ domain: 'categories', id: rawId });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'An unexpected error occurred.' };
@@ -163,9 +161,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
       return { success: false, error: updateError.message };
     }
 
-    revalidatePath('/admin/categories');
-    revalidatePath('/admin');
-    revalidatePath('/admin/initiatives');
+    revalidateEcosystemCache({ domain: 'categories', id });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'An unexpected error occurred.' };
@@ -191,9 +187,7 @@ export async function toggleCategoryActiveAction(id: string, isActive: boolean) 
       return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/categories');
-    revalidatePath('/admin');
-    revalidatePath('/admin/initiatives');
+    revalidateEcosystemCache({ domain: 'categories', id });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'An unexpected error occurred.' };
@@ -241,11 +235,10 @@ export async function deleteCategoryAction(id: string) {
       return { success: false, error: deleteError.message };
     }
 
-    revalidatePath('/admin/categories');
-    revalidatePath('/admin');
-    revalidatePath('/admin/initiatives');
+    revalidateEcosystemCache({ domain: 'categories', id });
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err?.message || 'An unexpected error occurred.' };
   }
 }
+
