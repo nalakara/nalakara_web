@@ -41,12 +41,21 @@ export interface EcosystemItem {
   order: number;
   updatedAt: string;
   commercial?: CommercialMetadata;
+  isDraft?: boolean;
 }
 
 export interface StudioPrinciple {
   number: string;
   title: LocalizedString;
   description: LocalizedString;
+  isDraft?: boolean;
+}
+
+export interface PreviewHeroConfig {
+  mode: 'studio' | 'featured_initiative';
+  featuredItem?: EcosystemItem | null;
+  showLifecycleBar: boolean;
 }
 
 export type RegistryFilter = 'all' | 'building' | 'usable' | 'commercial';
+

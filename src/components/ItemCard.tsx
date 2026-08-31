@@ -73,7 +73,15 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, featured = false }) =>
             <StageGlyph status={item.status} />
             <span className={styles.category}>{categoryLabel}</span>
           </div>
-          <StatusBadge status={item.status} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {item.isDraft && (
+              <span className={styles.draftBadge} title="Draft item not yet published">
+                <span className={styles.draftDot} />
+                Draft
+              </span>
+            )}
+            <StatusBadge status={item.status} />
+          </div>
         </div>
         <h3 className={styles.title}>{item.name}</h3>
       </header>

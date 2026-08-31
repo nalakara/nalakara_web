@@ -3,12 +3,19 @@
 import React from 'react';
 import { ECOSYSTEM_INITIATIVES } from '@/data/ecosystem';
 import { useLanguage } from '@/context/LanguageContext';
+import { EcosystemItem } from '@/types';
 import { ItemCard } from './ItemCard';
 import styles from './Initiatives.module.css';
 
-export const Initiatives: React.FC = () => {
+interface InitiativesProps {
+  items?: EcosystemItem[];
+}
+
+export const Initiatives: React.FC<InitiativesProps> = ({ items }) => {
   const { t } = useLanguage();
-  const featuredItems = ECOSYSTEM_INITIATIVES.filter((item) => item.featured);
+  const featuredItems = items !== undefined
+    ? items
+    : ECOSYSTEM_INITIATIVES.filter((item) => item.featured);
 
   return (
     <section className={styles.section} id="initiatives">
@@ -30,3 +37,4 @@ export const Initiatives: React.FC = () => {
     </section>
   );
 };
+

@@ -3,13 +3,18 @@
 import React, { useState, useMemo } from 'react';
 import { ECOSYSTEM_INITIATIVES } from '@/data/ecosystem';
 import { useLanguage } from '@/context/LanguageContext';
-import { RegistryFilter } from '@/types';
+import { RegistryFilter, EcosystemItem } from '@/types';
 import { ItemCard } from './ItemCard';
 import styles from './Registry.module.css';
 
-export const Registry: React.FC = () => {
+interface RegistryProps {
+  items?: EcosystemItem[];
+}
+
+export const Registry: React.FC<RegistryProps> = ({ items }) => {
   const { t } = useLanguage();
   const [activeFilter, setActiveFilter] = useState<RegistryFilter>('all');
+  const sourceItems = items !== undefined ? items : ECOSYSTEM_INITIATIVES;
 
   const filterTabs: { id: RegistryFilter; label: string; description: string; aria: string }[] = [
     {
@@ -39,7 +44,7 @@ export const Registry: React.FC = () => {
   ];
 
   const filteredItems = useMemo(() => {
-    return ECOSYSTEM_INITIATIVES.filter((item) => {
+    return sourceItems.filter((item) => {
       if (activeFilter === 'all') return true;
       if (activeFilter === 'building') {
         return item.status === 'idea' || item.status === 'lab' || item.status === 'project';
@@ -52,7 +57,7 @@ export const Registry: React.FC = () => {
       }
       return true;
     }).sort((a, b) => a.order - b.order);
-  }, [activeFilter]);
+  }, [sourceItems, activeFilter]);
 
   const activeTabMeta = filterTabs.find((tab) => tab.id === activeFilter) || filterTabs[0];
 
@@ -70,7 +75,7 @@ export const Registry: React.FC = () => {
         {/* Filter Controls */}
         <div className={styles.filters} role="tablist" aria-label="Ecosystem Filter Options">
           {filterTabs.map((tab) => {
-            const count = ECOSYSTEM_INITIATIVES.filter((item) => {
+            const count = sourceItems.filter((item) => {
               if (tab.id === 'all') return true;
               if (tab.id === 'building') return item.status === 'idea' || item.status === 'lab' || item.status === 'project';
               if (tab.id === 'usable') return item.status === 'product';
@@ -114,3 +119,4 @@ export const Registry: React.FC = () => {
     </section>
   );
 };
+
