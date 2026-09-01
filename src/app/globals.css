@@ -1,54 +1,54 @@
 /* Nalakara.com — Design Tokens & Core Styling */
 
 :root {
-  /* Color Palette — High Contrast Monochromatic & Restrained */
-  --bg-primary: #09090b;
-  --bg-surface: #121215;
-  --bg-surface-elevated: #18181c;
-  --bg-surface-subtle: #222228;
+  /* Color Palette — High Contrast Architectural Monochromatic */
+  --bg-primary: #08080a;
+  --bg-surface: #101014;
+  --bg-surface-elevated: #16161b;
+  --bg-surface-subtle: #1e1e24;
   
-  --text-primary: #f4f4f6;
-  --text-secondary: #a1a1aa;
-  --text-muted: #8e8e93;
-  --text-dim: #52525b;
+  --text-primary: #f4f4f7;
+  --text-secondary: #9d9da6;
+  --text-muted: #6e6e78;
+  --text-dim: #45454e;
 
-  --border-subtle: #27272a;
-  --border-default: #3f3f46;
-  --border-strong: #52525b;
+  --border-subtle: #1f1f25;
+  --border-default: #2e2e38;
+  --border-strong: #454553;
 
-  /* Lifecycle Status Palette — Functional and Precise */
-  --status-idea-bg: rgba(161, 161, 170, 0.1);
-  --status-idea-text: #a1a1aa;
-  --status-idea-border: rgba(161, 161, 170, 0.25);
+  /* Lifecycle Status Palette — Functional and Precise Architectural Accents */
+  --status-idea-bg: rgba(157, 157, 166, 0.08);
+  --status-idea-text: #9d9da6;
+  --status-idea-border: rgba(157, 157, 166, 0.2);
 
-  --status-lab-bg: rgba(251, 191, 36, 0.1);
+  --status-lab-bg: rgba(251, 191, 36, 0.08);
   --status-lab-text: #fbbf24;
-  --status-lab-border: rgba(251, 191, 36, 0.25);
+  --status-lab-border: rgba(251, 191, 36, 0.22);
 
-  --status-project-bg: rgba(56, 189, 248, 0.1);
+  --status-project-bg: rgba(56, 189, 248, 0.08);
   --status-project-text: #38bdf8;
-  --status-project-border: rgba(56, 189, 248, 0.25);
+  --status-project-border: rgba(56, 189, 248, 0.22);
 
-  --status-product-bg: rgba(52, 211, 153, 0.1);
+  --status-product-bg: rgba(52, 211, 153, 0.08);
   --status-product-text: #34d399;
-  --status-product-border: rgba(52, 211, 153, 0.25);
+  --status-product-border: rgba(52, 211, 153, 0.22);
 
-  --status-commercial-bg: rgba(167, 139, 250, 0.1);
+  --status-commercial-bg: rgba(192, 132, 252, 0.08);
   --status-commercial-text: #c084fc;
-  --status-commercial-border: rgba(167, 139, 250, 0.25);
+  --status-commercial-border: rgba(192, 132, 252, 0.22);
 
   /* Typography */
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   /* Spacing */
-  --container-max-width: 1120px;
-  --section-spacing-y: 6rem;
-  --section-spacing-y-mobile: 4rem;
+  --container-max-width: 1140px;
+  --section-spacing-y: 6.5rem;
+  --section-spacing-y-mobile: 4.5rem;
 
   /* Layout */
-  --radius-sm: 3px;
-  --radius-md: 6px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
   --radius-full: 9999px;
 }
 

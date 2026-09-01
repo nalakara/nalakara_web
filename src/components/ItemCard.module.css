@@ -4,9 +4,9 @@
   flex-direction: column;
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 1.75rem;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  border-radius: var(--radius-sm);
+  padding: 2.25rem 2rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
 .card:hover {
@@ -20,18 +20,40 @@
 }
 
 .header {
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .metaRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px dashed var(--border-subtle);
+}
+
+.sequenceWrap {
+  display: flex;
+  align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
+}
+
+.itemIndex {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
 }
 
 .categoryWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.statusWrap {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -44,31 +66,33 @@
 .category {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
 }
 
 .title {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: clamp(1.35rem, 2vw, 1.625rem);
+  font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
 }
 
 .tagline {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 0.75rem;
-  line-height: 1.4;
+  margin-bottom: 0.875rem;
+  line-height: 1.45;
 }
 
 .description {
   font-size: 0.875rem;
   color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 1.75rem;
+  line-height: 1.65;
+  margin-bottom: 2rem;
   flex-grow: 1;
 }
 
@@ -77,7 +101,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  padding-top: 1rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--border-subtle);
   margin-top: auto;
 }
@@ -89,9 +113,19 @@
   gap: 0.5rem;
 }
 
+.accessModelLabel {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
 .accessLabel {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--text-muted);
 }
 
@@ -103,7 +137,7 @@
   background-color: rgba(56, 189, 248, 0.08);
   border: 1px solid rgba(56, 189, 248, 0.2);
   padding: 0.15rem 0.45rem;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .draftBadge {
@@ -116,7 +150,7 @@
   background-color: rgba(251, 191, 36, 0.1);
   border: 1px solid rgba(251, 191, 36, 0.35);
   padding: 0.1rem 0.4rem;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
@@ -135,11 +169,11 @@
   gap: 0.35rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
   background: var(--bg-surface-subtle);
   padding: 0.45rem 0.85rem;
-  min-height: 38px;
+  min-height: 40px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
   transition: all 0.15s ease;
@@ -161,10 +195,12 @@
   align-items: center;
   gap: 0.35rem;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--text-dim);
   padding: 0.45rem 0.5rem;
-  min-height: 38px;
+  min-height: 40px;
 }
 
 @media (max-width: 640px) {

@@ -20,17 +20,27 @@ export const Initiatives: React.FC<InitiativesProps> = ({ items }) => {
   return (
     <section className={styles.section} id="initiatives">
       <div className="container">
-        <div className="section-header">
-          <span className="section-tag">{t.initiatives.tag}</span>
-          <h2 className="section-title">{t.initiatives.title}</h2>
+        {/* Section Header with Architectural Coordinate Notation */}
+        <div className={styles.sectionHeader}>
+          <div className={styles.tagWrap}>
+            <span className={styles.sectionIndex}>[01]</span>
+            <span className="section-tag">{t.initiatives.tag}</span>
+          </div>
+          <h2 className={styles.sectionTitle}>{t.initiatives.title}</h2>
           <p className={styles.lead}>
             {t.initiatives.lead}
           </p>
         </div>
 
+        {/* Asymmetric Ledger Grid: Flagship First Initiative + Secondary Artifacts */}
         <div className={styles.grid}>
-          {featuredItems.map((item) => (
-            <ItemCard key={item.id} item={item} featured={true} />
+          {featuredItems.map((item, index) => (
+            <div 
+              key={item.id} 
+              className={`${styles.itemWrapper} ${index === 0 ? styles.flagshipItem : styles.secondaryItem}`}
+            >
+              <ItemCard item={item} featured={index === 0} />
+            </div>
           ))}
         </div>
       </div>

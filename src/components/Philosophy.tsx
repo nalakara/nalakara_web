@@ -17,34 +17,26 @@ export const Philosophy: React.FC<PhilosophyProps> = ({ principles }) => {
   return (
     <section className={styles.section} id="philosophy">
       <div className="container">
-        <div className="section-header">
-          <span className="section-tag">{t.philosophy.tag}</span>
-          <h2 className="section-title">{t.philosophy.title}</h2>
+        {/* Section Header with Architectural Coordinate Notation */}
+        <div className={styles.sectionHeader}>
+          <div className={styles.tagWrap}>
+            <span className={styles.sectionIndex}>[03]</span>
+            <span className="section-tag">{t.philosophy.tag}</span>
+          </div>
+          <h2 className={styles.sectionTitle}>{t.philosophy.title}</h2>
           <p className={styles.lead}>
             {t.philosophy.lead}
           </p>
         </div>
 
+        {/* Architectural Principles Matrix */}
         <div className={styles.grid}>
           {sourcePrinciples.map((principle) => (
             <div key={principle.number} className={styles.card}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className={styles.number}>{principle.number}</span>
+              <div className={styles.principleHeader}>
+                <span className={styles.number}>[{principle.number}]</span>
                 {principle.isDraft && (
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-mono, monospace)',
-                      fontSize: '0.625rem',
-                      letterSpacing: '0.08em',
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      color: '#fbbf24',
-                      backgroundColor: 'rgba(251, 191, 36, 0.1)',
-                      border: '1px solid rgba(251, 191, 36, 0.35)',
-                      padding: '0.1rem 0.4rem',
-                      borderRadius: '3px',
-                    }}
-                  >
+                  <span className={styles.draftBadge}>
                     Draft
                   </span>
                 )}

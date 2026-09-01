@@ -64,15 +64,19 @@ export const Registry: React.FC<RegistryProps> = ({ items }) => {
   return (
     <section className={styles.section} id="registry">
       <div className="container">
-        <div className="section-header">
-          <span className="section-tag">{t.registry.tag}</span>
-          <h2 className="section-title">{t.registry.title}</h2>
+        {/* Section Header with Architectural Coordinate Notation */}
+        <div className={styles.sectionHeader}>
+          <div className={styles.tagWrap}>
+            <span className={styles.sectionIndex}>[02]</span>
+            <span className="section-tag">{t.registry.tag}</span>
+          </div>
+          <h2 className={styles.sectionTitle}>{t.registry.title}</h2>
           <p className={styles.lead}>
             {t.registry.lead}
           </p>
         </div>
 
-        {/* Filter Controls */}
+        {/* Architectural Ledger Controls */}
         <div className={styles.filters} role="tablist" aria-label="Ecosystem Filter Options">
           {filterTabs.map((tab) => {
             const count = sourceItems.filter((item) => {

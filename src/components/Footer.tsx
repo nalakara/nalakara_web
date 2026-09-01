@@ -11,6 +11,17 @@ export const Footer: React.FC = () => {
   return (
     <footer className={styles.footer} id="about">
       <div className="container">
+        {/* Footer Ledger Top Header */}
+        <div className={styles.footerHeader}>
+          <div className={styles.footerTagWrap}>
+            <span className={styles.footerIndex}>[04]</span>
+            <span className={styles.footerTag}>STUDIO ARCHIVE & COLOPHON</span>
+          </div>
+          <div className={styles.footerCoord}>
+            <span>COORDINATES · BANDUNG / GLOBAL</span>
+          </div>
+        </div>
+
         <div className={styles.topRow}>
           <div className={styles.aboutBlock}>
             <div className={styles.brand}>{STUDIO_META.name}</div>

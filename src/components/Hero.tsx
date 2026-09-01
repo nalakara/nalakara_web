@@ -3,7 +3,7 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { PreviewHeroConfig } from '@/types';
-import { FoundryField } from './FoundryField';
+import { ConstellationField } from './ConstellationField';
 import styles from './Hero.module.css';
 
 interface HeroProps {
@@ -31,18 +31,34 @@ export const Hero: React.FC<HeroProps> = ({ config }) => {
 
   return (
     <section className={styles.hero} id="top">
-      <div className="container">
-        <div className={styles.heroGrid}>
-          {/* Left / Primary: Editorial Manifesto & Actions */}
-          <div className={styles.heroContent}>
-            <div className={styles.tagWrapper}>
-              <span className={styles.tag}>{tagLabel}</span>
-            </div>
+      {/* 1. Atmospheric Fullscreen Constellation Field (z-index: 0) */}
+      <div className={styles.fieldWrapper}>
+        <ConstellationField density={0.65} speed={0.35} length={0.8} />
+      </div>
 
-            <h1 className={styles.headline}>
-              {headline}
-            </h1>
+      {/* 2. Architectural Vignette / Soft Gradient Mask (z-index: 1) */}
+      <div className={styles.vignetteOverlay} aria-hidden="true" />
 
+      {/* 3. Hero Content Container (z-index: 2) */}
+      <div className={`container ${styles.heroContainer}`}>
+        {/* Top Coordinate Annotation Bar */}
+        <div className={styles.ledgerHeader}>
+          <div className={styles.ledgerTagWrap}>
+            <span className={styles.tagIndex}>[00]</span>
+            <span className={styles.tag}>{tagLabel}</span>
+          </div>
+          <div className={styles.ledgerCoordinate}>
+            <span>STUDIO & FOUNDRY · EST 2026</span>
+          </div>
+        </div>
+
+        {/* Central Manifesto Composition */}
+        <div className={styles.heroContent}>
+          <h1 className={styles.headline}>
+            {headline}
+          </h1>
+
+          <div className={styles.manifestoBody}>
             <p className={styles.subhead}>
               {subhead}
             </p>
@@ -59,7 +75,7 @@ export const Hero: React.FC<HeroProps> = ({ config }) => {
                   <span className={styles.arrow} aria-hidden="true">↗</span>
                 </a>
               ) : (
-                <a href="#registry" className={styles.primaryButton}>
+                <a href="#initiatives" className={styles.primaryButton}>
                   {t.hero.primaryCta}
                   <span className={styles.arrow} aria-hidden="true">↓</span>
                 </a>
@@ -68,32 +84,45 @@ export const Hero: React.FC<HeroProps> = ({ config }) => {
                 {t.hero.secondaryCta}
               </a>
             </div>
-
-            {showLifecycle && (
-              <div className={styles.lifecycleBar} aria-label={t.hero.lifecycleTitle}>
-                <div className={styles.lifecycleTitle}>{t.hero.lifecycleTitle}</div>
-                <div className={styles.lifecycleSteps}>
-                  <span className={styles.step}>{t.hero.stages.idea}</span>
-                  <span className={styles.sep}>→</span>
-                  <span className={styles.step}>{t.hero.stages.lab}</span>
-                  <span className={styles.sep}>→</span>
-                  <span className={styles.step}>{t.hero.stages.project}</span>
-                  <span className={styles.sep}>→</span>
-                  <span className={styles.step}>{t.hero.stages.product}</span>
-                  <span className={styles.sep}>→</span>
-                  <span className={styles.step}>{t.hero.stages.commercial}</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Right / Spatial Artifact: The Foundry Tensor Field */}
-          <div className={styles.heroArtifact}>
-            <FoundryField />
           </div>
         </div>
+
+        {/* Continuous Lifecycle Matrix Footer Spine */}
+        {showLifecycle && (
+          <div className={styles.lifecycleBar} aria-label={t.hero.lifecycleTitle}>
+            <div className={styles.lifecycleMeta}>
+              <span className={styles.lifecycleIndex}>LIFECYCLE MATRIX</span>
+              <span className={styles.lifecycleTitle}>{t.hero.lifecycleTitle}</span>
+            </div>
+            <div className={styles.lifecycleSteps}>
+              <div className={styles.stepItem}>
+                <span className={styles.stepNum}>01</span>
+                <span className={styles.step}>{t.hero.stages.idea}</span>
+              </div>
+              <span className={styles.sep}>—</span>
+              <div className={styles.stepItem}>
+                <span className={styles.stepNum}>02</span>
+                <span className={styles.step}>{t.hero.stages.lab}</span>
+              </div>
+              <span className={styles.sep}>—</span>
+              <div className={styles.stepItem}>
+                <span className={styles.stepNum}>03</span>
+                <span className={styles.step}>{t.hero.stages.project}</span>
+              </div>
+              <span className={styles.sep}>—</span>
+              <div className={styles.stepItem}>
+                <span className={styles.stepNum}>04</span>
+                <span className={styles.step}>{t.hero.stages.product}</span>
+              </div>
+              <span className={styles.sep}>—</span>
+              <div className={styles.stepItem}>
+                <span className={styles.stepNum}>05</span>
+                <span className={styles.step}>{t.hero.stages.commercial}</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
 };
-

@@ -88,16 +88,16 @@ export const FoundryField: React.FC = () => {
     }
 
     const render = () => {
-      time += 0.008; // Slower, calmer motion
+      time += 0.005; // Calmed, gentle ambient motion
       ctx.clearRect(0, 0, width, height);
 
       // Smooth mouse interpolation with soft damping
-      mouse.x += (mouse.targetX - mouse.x) * 0.08;
-      mouse.y += (mouse.targetY - mouse.y) * 0.08;
+      mouse.x += (mouse.targetX - mouse.x) * 0.06;
+      mouse.y += (mouse.targetY - mouse.y) * 0.06;
 
       // 1. Draw Architectural Metric Grid
       const gridStep = 44;
-      ctx.strokeStyle = 'rgba(63, 63, 70, 0.2)';
+      ctx.strokeStyle = 'rgba(46, 46, 56, 0.35)';
       ctx.lineWidth = 0.5;
 
       for (let x = 0; x < width; x += gridStep) {
@@ -109,14 +109,14 @@ export const FoundryField: React.FC = () => {
         // Subtle structural corner crosshairs
         for (let y = 0; y < height; y += gridStep) {
           if (x % (gridStep * 2) === 0 && y % (gridStep * 2) === 0) {
-            ctx.strokeStyle = 'rgba(113, 113, 122, 0.25)';
+            ctx.strokeStyle = 'rgba(110, 110, 120, 0.3)';
             ctx.beginPath();
             ctx.moveTo(x - 2, y);
             ctx.lineTo(x + 2, y);
             ctx.moveTo(x, y - 2);
             ctx.lineTo(x, y + 2);
             ctx.stroke();
-            ctx.strokeStyle = 'rgba(63, 63, 70, 0.2)';
+            ctx.strokeStyle = 'rgba(46, 46, 56, 0.35)';
           }
         }
       }
@@ -130,8 +130,8 @@ export const FoundryField: React.FC = () => {
 
       // 2. Compute Node Positions with Gentle Physical Oscillation & Pointer Deflection
       const currentNodes = STAGE_NODES.map((node) => {
-        const floatX = Math.sin(time * node.speed + node.phase) * 8;
-        const floatY = Math.cos(time * node.speed * 0.8 + node.phase) * 7;
+        const floatX = Math.sin(time * node.speed + node.phase) * 6;
+        const floatY = Math.cos(time * node.speed * 0.75 + node.phase) * 5;
         let x = node.baseX * width + floatX;
         let y = node.baseY * height + floatY;
 
@@ -140,9 +140,9 @@ export const FoundryField: React.FC = () => {
           const dx = x - mouse.x;
           const dy = y - mouse.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const maxDist = 110;
+          const maxDist = 100;
           if (dist < maxDist && dist > 0) {
-            const force = (1 - dist / maxDist) * 16;
+            const force = (1 - dist / maxDist) * 12;
             x += (dx / dist) * force;
             y += (dy / dist) * force;
           }
@@ -158,10 +158,10 @@ export const FoundryField: React.FC = () => {
         const prev = currentNodes[i - 1];
         const curr = currentNodes[i];
         const cpX = (prev.x + curr.x) / 2;
-        const cpY = (prev.y + curr.y) / 2 + Math.sin(time + i) * 4;
+        const cpY = (prev.y + curr.y) / 2 + Math.sin(time + i) * 3;
         ctx.quadraticCurveTo(cpX, cpY, curr.x, curr.y);
       }
-      ctx.strokeStyle = 'rgba(161, 161, 170, 0.25)';
+      ctx.strokeStyle = 'rgba(157, 157, 166, 0.3)';
       ctx.lineWidth = 1;
       ctx.setLineDash([3, 3]);
       ctx.stroke();
@@ -172,7 +172,7 @@ export const FoundryField: React.FC = () => {
         // Subtle boundary ring
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius * 2.2, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(63, 63, 70, 0.35)';
+        ctx.strokeStyle = 'rgba(69, 69, 83, 0.4)';
         ctx.lineWidth = 0.75;
         ctx.stroke();
 
@@ -188,13 +188,13 @@ export const FoundryField: React.FC = () => {
         } else if (node.type === 'lab') {
           ctx.fillStyle = '#fbbf24';
         } else {
-          ctx.fillStyle = '#f4f4f6';
+          ctx.fillStyle = '#f4f4f7';
         }
         ctx.fill();
 
         // Minimal center reticle
-        const reticleSize = 4;
-        ctx.strokeStyle = 'rgba(161, 161, 170, 0.5)';
+        const reticleSize = 3.5;
+        ctx.strokeStyle = 'rgba(157, 157, 166, 0.6)';
         ctx.lineWidth = 0.5;
         ctx.beginPath();
         ctx.moveTo(node.x - reticleSize, node.y);
@@ -208,12 +208,12 @@ export const FoundryField: React.FC = () => {
 
         // Stage Title Notation (e.g. 01 Idea / 01 Gagasan)
         ctx.font = '600 9px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        ctx.fillStyle = 'rgba(244, 244, 246, 0.9)';
+        ctx.fillStyle = 'rgba(244, 244, 247, 0.92)';
         ctx.fillText(`${node.stageNumber} ${nodeLabel}`, node.x + 10, node.y - 4);
 
         // Stage Purpose Sublabel (e.g. Concept / Konsep)
         ctx.font = '400 8px ui-monospace, SFMono-Regular, Menlo, monospace';
-        ctx.fillStyle = 'rgba(161, 161, 170, 0.7)';
+        ctx.fillStyle = 'rgba(157, 157, 166, 0.75)';
         ctx.fillText(nodeSublabel, node.x + 10, node.y + 7);
       });
 

@@ -69,11 +69,14 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, featured = false }) =>
     >
       <header className={styles.header}>
         <div className={styles.metaRow}>
-          <div className={styles.categoryWrap}>
-            <StageGlyph status={item.status} />
-            <span className={styles.category}>{categoryLabel}</span>
+          <div className={styles.sequenceWrap}>
+            <span className={styles.itemIndex}>[0{item.order}]</span>
+            <div className={styles.categoryWrap}>
+              <StageGlyph status={item.status} />
+              <span className={styles.category}>{categoryLabel}</span>
+            </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div className={styles.statusWrap}>
             {item.isDraft && (
               <span className={styles.draftBadge} title="Draft item not yet published">
                 <span className={styles.draftDot} />
@@ -91,6 +94,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, featured = false }) =>
 
       <footer className={styles.footer}>
         <div className={styles.accessTag}>
+          <span className={styles.accessModelLabel}>ACCESS</span>
           <span className={styles.accessLabel}>{accessLabel}</span>
           {badgeLabel && (
             <span className={styles.pricingBadge}>{badgeLabel}</span>
