@@ -80,6 +80,10 @@ CREATE TABLE IF NOT EXISTS initiatives (
   commercial_badge_id VARCHAR(40),
   commercial_action_en VARCHAR(40),
   commercial_action_id VARCHAR(40),
+  cover_media_type VARCHAR(16),
+  cover_media_url VARCHAR(512),
+  cover_media_focal VARCHAR(32),
+  cover_media_poster VARCHAR(512),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   published_at TIMESTAMPTZ

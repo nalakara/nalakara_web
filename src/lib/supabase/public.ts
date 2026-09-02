@@ -61,6 +61,16 @@ function mapInitiativeToPublicItem(
         }
       : undefined;
 
+  const coverMedia =
+    row.cover_media_url && (row.cover_media_type === 'image' || row.cover_media_type === 'video')
+      ? {
+          type: row.cover_media_type as 'image' | 'video',
+          url: row.cover_media_url,
+          focalPosition: row.cover_media_focal || 'center',
+          posterUrl: row.cover_media_poster || undefined,
+        }
+      : undefined;
+
   return {
     id: row.id,
     name: row.name,
@@ -81,6 +91,7 @@ function mapInitiativeToPublicItem(
     order: row.sort_order,
     updatedAt: row.updated_at ? row.updated_at.split('T')[0] : '2026-08-30',
     commercial,
+    coverMedia,
     isDraft: false, // Public items are strictly published
   };
 }

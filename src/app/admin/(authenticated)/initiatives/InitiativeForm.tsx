@@ -79,6 +79,17 @@ export default function InitiativeForm({
     initialData?.commercial_action_id || ''
   );
 
+  // Cover Media State
+  const [coverMediaType, setCoverMediaType] = useState<'image' | 'video' | ''>(
+    (initialData?.cover_media_type as 'image' | 'video') || ''
+  );
+  const [coverMediaUrl, setCoverMediaUrl] = useState(initialData?.cover_media_url || '');
+  const [coverMediaFocal, setCoverMediaFocal] = useState(initialData?.cover_media_focal || 'center');
+  const [coverMediaPoster, setCoverMediaPoster] = useState(initialData?.cover_media_poster || '');
+  const [isUploadingMedia, setIsUploadingMedia] = useState(false);
+  const [isUploadingPoster, setIsUploadingPoster] = useState(false);
+  const [mediaUploadError, setMediaUploadError] = useState<string | null>(null);
+
   // UI Feedback
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [generalSuccess, setGeneralSuccess] = useState<string | null>(null);
@@ -98,6 +109,54 @@ export default function InitiativeForm({
   const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsSlugCustomized(true);
     setSlug(formatSlug(e.target.value));
+  };
+
+  // Cover Media Upload Handler
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, isPoster = false) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setMediaUploadError(null);
+    if (isPoster) {
+      setIsUploadingPoster(true);
+    } else {
+      setIsUploadingMedia(true);
+    }
+
+    try {
+      const { uploadInitiativeMediaAction } = await import('./actions');
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await uploadInitiativeMediaAction(fd);
+
+      if (!res.success || !res.data) {
+        setMediaUploadError(res.error || 'Failed to upload media.');
+      } else {
+        if (isPoster) {
+          setCoverMediaPoster(res.data.url);
+        } else {
+          setCoverMediaUrl(res.data.url);
+          setCoverMediaType(res.data.mediaType);
+        }
+      }
+    } catch (err: any) {
+      setMediaUploadError(err?.message || 'Error occurred during file upload.');
+    } finally {
+      if (isPoster) {
+        setIsUploadingPoster(false);
+      } else {
+        setIsUploadingMedia(false);
+      }
+      e.target.value = '';
+    }
+  };
+
+  const handleRemoveMedia = () => {
+    setCoverMediaType('');
+    setCoverMediaUrl('');
+    setCoverMediaFocal('center');
+    setCoverMediaPoster('');
+    setMediaUploadError(null);
   };
 
   // Build FormData for Server Action submission
@@ -122,6 +181,11 @@ export default function InitiativeForm({
     fd.set('commercial_badge_id', commercialBadgeId);
     fd.set('commercial_action_en', commercialActionEn);
     fd.set('commercial_action_id', commercialActionId);
+
+    fd.set('cover_media_type', coverMediaType);
+    fd.set('cover_media_url', coverMediaUrl);
+    fd.set('cover_media_focal', coverMediaFocal);
+    fd.set('cover_media_poster', coverMediaPoster);
 
     return fd;
   };
@@ -499,7 +563,229 @@ export default function InitiativeForm({
         </div>
       </div>
 
-      {/* SECTION 2: BILINGUAL CONTENT (SIDE-BY-SIDE) */}
+      {/* SECTION 2: COVER MEDIA (16:9 ARCHITECTURAL FRAME) */}
+      <div className={styles.formCard}>
+        <div className={styles.cardHeader}>
+          <div>
+            <h2 className={styles.cardTitle}>Cover Media (Portfolio Card Frame)</h2>
+            <span className={styles.cardSubtitle}>
+              Single representative 16:9 image or ambient video
+            </span>
+          </div>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted, #71717a)' }}>
+            Optional · Architectural Ledger Media
+          </span>
+        </div>
+
+        {mediaUploadError && (
+          <div style={{ color: '#f87171', fontSize: '0.8125rem', marginBottom: '1rem', padding: '0.5rem 0.75rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '4px' }}>
+            {mediaUploadError}
+          </div>
+        )}
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 360px) 1fr', gap: '1.75rem', alignItems: 'start' }}>
+          {/* Left Column: Live 16:9 Aspect Frame Preview */}
+          <div>
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              aspectRatio: '16 / 9',
+              backgroundColor: '#0c0c0e',
+              border: '1px solid var(--border-subtle, #27272a)',
+              borderRadius: '4px',
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {coverMediaUrl ? (
+                coverMediaType === 'video' ? (
+                  <video
+                    src={coverMediaUrl}
+                    poster={coverMediaPoster || undefined}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={coverMediaUrl}
+                    alt={name || 'Initiative cover media'}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: coverMediaFocal || 'center',
+                    }}
+                  />
+                )
+              ) : (
+                <div style={{ textAlign: 'center', padding: '1rem', color: 'var(--text-dim, #52525b)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>16:9</div>
+                  <div style={{ fontSize: '0.6875rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>No Media Attached</div>
+                </div>
+              )}
+
+              {/* Tag indicator overlay */}
+              {coverMediaUrl && (
+                <div style={{
+                  position: 'absolute',
+                  top: '8px',
+                  left: '8px',
+                  backgroundColor: 'rgba(9, 9, 11, 0.85)',
+                  backdropFilter: 'blur(4px)',
+                  padding: '2px 6px',
+                  borderRadius: '3px',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.625rem',
+                  textTransform: 'uppercase',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-subtle)'
+                }}>
+                  {coverMediaType}
+                </div>
+              )}
+            </div>
+
+            {/* Media quick actions */}
+            {coverMediaUrl && (
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.75rem' }}>
+                <button
+                  type="button"
+                  onClick={handleRemoveMedia}
+                  disabled={isPending || isUploadingMedia}
+                  className={`${styles.btn} ${styles.btnDanger}`}
+                  style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem' }}
+                >
+                  Remove Media
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Upload Controls & Focal Settings */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            {/* Direct Upload File Input */}
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Upload Asset (JPG, PNG, WebP ≤ 5MB · MP4, WebM ≤ 25MB)
+              </label>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
+                onChange={(e) => handleFileUpload(e, false)}
+                disabled={isPending || isUploadingMedia}
+                className={styles.formInput}
+                style={{ padding: '0.4rem 0.5rem', fontSize: '0.8125rem' }}
+              />
+              <div className={styles.fieldMeta}>
+                <span>{isUploadingMedia ? 'Uploading to Supabase Storage...' : 'Auto-detects format (Image vs Ambient Video)'}</span>
+              </div>
+            </div>
+
+            {/* Direct URL or Storage Path */}
+            <div className={styles.formGroup}>
+              <label htmlFor="input-media-url" className={styles.formLabel}>
+                Media Resource URL / Path
+              </label>
+              <input
+                id="input-media-url"
+                type="url"
+                value={coverMediaUrl}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setCoverMediaUrl(val);
+                  if (val && !coverMediaType) {
+                    setCoverMediaType(val.match(/\.(mp4|webm)$/i) ? 'video' : 'image');
+                  }
+                }}
+                placeholder="https://... or /storage/..."
+                className={styles.formInput}
+                disabled={isPending || isUploadingMedia}
+              />
+            </div>
+
+            {/* Media Type & Focal Controls */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className={styles.formGroup}>
+                <label htmlFor="select-media-type" className={styles.formLabel}>
+                  Media Type
+                </label>
+                <select
+                  id="select-media-type"
+                  value={coverMediaType}
+                  onChange={(e) => setCoverMediaType(e.target.value as 'image' | 'video' | '')}
+                  className={styles.formSelect}
+                  disabled={isPending}
+                >
+                  <option value="">None / Text Only</option>
+                  <option value="image">Image</option>
+                  <option value="video">Ambient Video</option>
+                </select>
+              </div>
+
+              {coverMediaType === 'image' && (
+                <div className={styles.formGroup}>
+                  <label htmlFor="select-media-focal" className={styles.formLabel}>
+                    Image Focal Position
+                  </label>
+                  <select
+                    id="select-media-focal"
+                    value={coverMediaFocal}
+                    onChange={(e) => setCoverMediaFocal(e.target.value)}
+                    className={styles.formSelect}
+                    disabled={isPending}
+                  >
+                    <option value="center">Center</option>
+                    <option value="top">Top</option>
+                    <option value="bottom">Bottom</option>
+                    <option value="left">Left</option>
+                    <option value="right">Right</option>
+                  </select>
+                </div>
+              )}
+            </div>
+
+            {/* Optional Video Poster Frame */}
+            {coverMediaType === 'video' && (
+              <div className={styles.formGroup} style={{ paddingTop: '0.5rem', borderTop: '1px dashed var(--border-subtle)' }}>
+                <label className={styles.formLabel}>
+                  Video Poster / Fallback Image (Optional)
+                </label>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  <input
+                    type="url"
+                    value={coverMediaPoster}
+                    onChange={(e) => setCoverMediaPoster(e.target.value)}
+                    placeholder="https://... (image url)"
+                    className={styles.formInput}
+                    disabled={isPending || isUploadingPoster}
+                    style={{ flex: 1 }}
+                  />
+                  <label className={`${styles.btn} ${styles.btnSecondary}`} style={{ cursor: 'pointer', whiteSpace: 'nowrap', fontSize: '0.75rem', padding: '0.5rem 0.75rem' }}>
+                    {isUploadingPoster ? 'Uploading...' : 'Upload Poster'}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={(e) => handleFileUpload(e, true)}
+                      disabled={isPending || isUploadingPoster}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION 3: BILINGUAL CONTENT (SIDE-BY-SIDE) */}
       <div className={styles.formCard}>
         <div className={styles.cardHeader}>
           <div>

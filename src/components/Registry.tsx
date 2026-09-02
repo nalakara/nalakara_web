@@ -112,7 +112,7 @@ export const Registry: React.FC<RegistryProps> = ({ items }) => {
         {/* Filtered Grid */}
         <div className={styles.grid}>
           {filteredItems.length > 0 ? (
-            filteredItems.map((item) => <ItemCard key={item.id} item={item} />)
+            filteredItems.map((item) => <ItemCard key={item.id} item={item} variant="registry" />)
           ) : (
             <div className={styles.emptyState}>
               <p>{t.registry.emptyState}</p>

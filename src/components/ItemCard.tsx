@@ -9,6 +9,7 @@ import styles from './ItemCard.module.css';
 interface ItemCardProps {
   item: EcosystemItem;
   featured?: boolean;
+  variant?: 'initiative' | 'registry';
 }
 
 // Subtle geometric stage glyph connecting card to the 5-stage lifecycle model
@@ -25,7 +26,7 @@ const StageGlyph: React.FC<{ status: LifecycleStatus }> = ({ status }) => {
     return (
       <svg className={styles.glyph} width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
         <rect x="2.5" y="2.5" width="9" height="9" stroke="#34d399" strokeWidth="1" />
-        <circle cx="7" cy="7" r="2" fill="#34d399" />
+        <circle cx="7" cy="2" fill="#34d399" />
       </svg>
     );
   }
@@ -55,39 +56,199 @@ const StageGlyph: React.FC<{ status: LifecycleStatus }> = ({ status }) => {
   );
 };
 
-export const ItemCard: React.FC<ItemCardProps> = ({ item, featured = false }) => {
+export const ItemCard: React.FC<ItemCardProps> = ({ item, featured = false, variant = 'initiative' }) => {
   const { language, t } = useLanguage();
   const categoryLabel = t.itemCard.categories[item.category] || item.category;
   const accessLabel = t.itemCard.accessModels[item.accessModel] || item.accessModel;
   const badgeLabel = item.commercial?.badgeLabel?.[language] || (item.commercial ? t.itemCard.commercialCandidate : undefined);
   const actionLabel = item.commercial?.actionLabel?.[language] || t.itemCard.visit;
+  const hasMedia = Boolean(item.coverMedia && item.coverMedia.url);
 
-  return (
-    <article 
-      className={`${styles.card} ${featured ? styles.cardFeatured : ''}`}
-      id={`item-${item.id}`}
-    >
-      <header className={styles.header}>
-        <div className={styles.metaRow}>
-          <div className={styles.sequenceWrap}>
-            <span className={styles.itemIndex}>[0{item.order}]</span>
-            <div className={styles.categoryWrap}>
-              <StageGlyph status={item.status} />
-              <span className={styles.category}>{categoryLabel}</span>
+  // 1. INITIATIVES VARIANT: Full-Bleed 16:9 Visual Portfolio Panel
+  if (variant === 'initiative' && hasMedia && item.coverMedia) {
+    return (
+      <article
+        className={`${styles.card} ${styles.visualCard} ${featured ? styles.cardFeatured : ''}`}
+        id={`item-${item.id}`}
+      >
+        {/* Full-Bleed 16:9 Media Canvas Surface */}
+        <div className={styles.mediaSurface}>
+          {item.coverMedia.type === 'video' ? (
+            <video
+              src={item.coverMedia.url}
+              poster={item.coverMedia.posterUrl || undefined}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className={styles.mediaAsset}
+            />
+          ) : (
+            <img
+              src={item.coverMedia.url}
+              alt={item.name}
+              className={styles.mediaAsset}
+              style={{ objectPosition: item.coverMedia.focalPosition || 'center' }}
+            />
+          )}
+          {/* Architectural Dark Vignette Overlay */}
+          <div className={styles.vignetteOverlay} aria-hidden="true" />
+        </div>
+
+        {/* Layered Architectural Ledger Typography & Annotations */}
+        <div className={styles.overlayContent}>
+          {/* Header Annotation Layer */}
+          <header className={styles.visualHeader}>
+            <div className={styles.sequenceWrap}>
+              <span className={styles.itemIndex}>[0{item.order}]</span>
+              <div className={styles.categoryWrap}>
+                <StageGlyph status={item.status} />
+                <span className={styles.category}>{categoryLabel}</span>
+              </div>
+            </div>
+            <div className={styles.statusWrap}>
+              {item.isDraft && (
+                <span className={styles.draftBadge} title="Draft item not yet published">
+                  <span className={styles.draftDot} />
+                  Draft
+                </span>
+              )}
+              <StatusBadge status={item.status} />
+            </div>
+          </header>
+
+          {/* Body Section: Primary Title & Hover Editorial Reveal Layer */}
+          <div className={styles.visualBody}>
+            <div className={styles.titleWrap}>
+              <h3 className={styles.visualTitle}>{item.name}</h3>
+            </div>
+
+            {/* Editorial Metadata Reveal Panel (Reveals on Hover, Graceful on Touch) */}
+            <div className={styles.revealPanel}>
+              <div className={styles.revealDivider} aria-hidden="true" />
+
+              <p className={styles.revealTagline}>{item.tagline[language]}</p>
+
+              <div className={styles.revealMetaGrid}>
+                <div className={styles.revealMetaCol}>
+                  <span className={styles.revealMetaLabel}>STATUS</span>
+                  <span className={styles.revealMetaValue}>{accessLabel.toUpperCase()}</span>
+                </div>
+
+                <div className={styles.revealMetaCol}>
+                  <span className={styles.revealMetaLabel}>YEAR</span>
+                  <span className={styles.revealMetaValue}>{item.updatedAt ? item.updatedAt.split('-')[0] : '2026'}</span>
+                </div>
+
+                {badgeLabel && (
+                  <div className={styles.revealMetaCol}>
+                    <span className={styles.revealMetaLabel}>MODEL</span>
+                    <span className={styles.revealMetaValueHighlight}>{badgeLabel}</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-          <div className={styles.statusWrap}>
-            {item.isDraft && (
-              <span className={styles.draftBadge} title="Draft item not yet published">
-                <span className={styles.draftDot} />
-                Draft
+
+          {/* Footer Action Layer */}
+          <footer className={styles.visualFooter}>
+            {item.targetUrl ? (
+              <a
+                href={item.targetUrl}
+                target={item.isExternal ? '_blank' : '_self'}
+                rel={item.isExternal ? 'noopener noreferrer' : undefined}
+                className={styles.visualLink}
+                aria-label={`View project ${item.name}`}
+              >
+                <span>{language === 'id' ? 'LIHAT PROYEK' : 'VIEW PROJECT'}</span>
+                <span className={styles.arrow} aria-hidden="true">→</span>
+              </a>
+            ) : (
+              <span className={styles.visualDisabledLink} title={t.itemCard.inFoundry}>
+                <span>{t.itemCard.inFoundry}</span>
+                <span className={styles.lock} aria-hidden="true">·</span>
               </span>
             )}
-            <StatusBadge status={item.status} />
+          </footer>
+        </div>
+      </article>
+    );
+  }
+
+  // 2. REGISTRY VARIANT (Catalogue Mode) OR Fallback Editorial Text Card
+  return (
+    <article 
+      className={`${styles.card} ${variant === 'registry' ? styles.registryCard : styles.textCard} ${featured ? styles.cardFeatured : ''}`}
+      id={`item-${item.id}`}
+    >
+      {/* Registry Catalogue Top Media Frame (when Cover Media exists) */}
+      {variant === 'registry' && hasMedia && item.coverMedia && (
+        <div className={styles.registryMediaFrame}>
+          {item.coverMedia.type === 'video' ? (
+            <video
+              src={item.coverMedia.url}
+              poster={item.coverMedia.posterUrl || undefined}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className={styles.registryMediaAsset}
+            />
+          ) : (
+            <img
+              src={item.coverMedia.url}
+              alt={item.name}
+              className={styles.registryMediaAsset}
+              style={{ objectPosition: item.coverMedia.focalPosition || 'center' }}
+            />
+          )}
+          {/* Subtle Top Metadata Stamp inside Media Frame */}
+          <div className={styles.registryMediaHeader}>
+            <div className={styles.sequenceWrap}>
+              <span className={styles.itemIndex}>[0{item.order}]</span>
+              <div className={styles.categoryWrap}>
+                <StageGlyph status={item.status} />
+                <span className={styles.category}>{categoryLabel}</span>
+              </div>
+            </div>
+            <div className={styles.statusWrap}>
+              <StatusBadge status={item.status} />
+            </div>
           </div>
         </div>
-        <h3 className={styles.title}>{item.name}</h3>
-      </header>
+      )}
+
+      {/* Header (Only when no top media frame exists in text-card fallback) */}
+      {(!hasMedia || variant !== 'registry') && (
+        <header className={styles.header}>
+          <div className={styles.metaRow}>
+            <div className={styles.sequenceWrap}>
+              <span className={styles.itemIndex}>[0{item.order}]</span>
+              <div className={styles.categoryWrap}>
+                <StageGlyph status={item.status} />
+                <span className={styles.category}>{categoryLabel}</span>
+              </div>
+            </div>
+            <div className={styles.statusWrap}>
+              {item.isDraft && (
+                <span className={styles.draftBadge} title="Draft item not yet published">
+                  <span className={styles.draftDot} />
+                  Draft
+                </span>
+              )}
+              <StatusBadge status={item.status} />
+            </div>
+          </div>
+          <h3 className={styles.title}>{item.name}</h3>
+        </header>
+      )}
+
+      {/* Editorial Content Below Image */}
+      {variant === 'registry' && hasMedia && (
+        <div className={styles.registryBody}>
+          <h3 className={styles.registryTitle}>{item.name}</h3>
+        </div>
+      )}
 
       <p className={styles.tagline}>{item.tagline[language]}</p>
       <p className={styles.description}>{item.description[language]}</p>

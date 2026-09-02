@@ -27,6 +27,15 @@ export interface CommercialMetadata {
   actionLabel?: LocalizedString;
 }
 
+export type CoverMediaType = 'image' | 'video';
+
+export interface CoverMedia {
+  type: CoverMediaType;
+  url: string;
+  focalPosition?: string; // e.g. 'center', 'top', 'bottom'
+  posterUrl?: string;     // poster fallback for video
+}
+
 export interface EcosystemItem {
   id: string;
   name: string;
@@ -41,6 +50,7 @@ export interface EcosystemItem {
   order: number;
   updatedAt: string;
   commercial?: CommercialMetadata;
+  coverMedia?: CoverMedia;
   isDraft?: boolean;
 }
 

@@ -158,6 +158,12 @@ export async function createInitiativeAction(formData: FormData): Promise<Action
   const commercialActionEn = (formData.get('commercial_action_en') as string || '').trim().slice(0, 40) || null;
   const commercialActionId = (formData.get('commercial_action_id') as string || '').trim().slice(0, 40) || null;
 
+  const rawCoverType = (formData.get('cover_media_type') as string || '').trim().toLowerCase();
+  const coverMediaType = rawCoverType === 'image' || rawCoverType === 'video' ? rawCoverType : null;
+  const coverMediaUrl = (formData.get('cover_media_url') as string || '').trim() || null;
+  const coverMediaFocal = (formData.get('cover_media_focal') as string || '').trim() || 'center';
+  const coverMediaPoster = (formData.get('cover_media_poster') as string || '').trim() || null;
+
   const { errors, sortOrder } = validateMetadata(
     name,
     slug,
@@ -218,6 +224,10 @@ export async function createInitiativeAction(formData: FormData): Promise<Action
     commercial_badge_id: commercialBadgeId,
     commercial_action_en: commercialActionEn,
     commercial_action_id: commercialActionId,
+    cover_media_type: coverMediaType,
+    cover_media_url: coverMediaUrl,
+    cover_media_focal: coverMediaFocal,
+    cover_media_poster: coverMediaPoster,
     published_at: null,
   };
 
@@ -273,6 +283,12 @@ export async function updateInitiativeDraftAction(id: string, formData: FormData
   const commercialActionEn = (formData.get('commercial_action_en') as string || '').trim().slice(0, 40) || null;
   const commercialActionId = (formData.get('commercial_action_id') as string || '').trim().slice(0, 40) || null;
 
+  const rawCoverType = (formData.get('cover_media_type') as string || '').trim().toLowerCase();
+  const coverMediaType = rawCoverType === 'image' || rawCoverType === 'video' ? rawCoverType : null;
+  const coverMediaUrl = (formData.get('cover_media_url') as string || '').trim() || null;
+  const coverMediaFocal = (formData.get('cover_media_focal') as string || '').trim() || 'center';
+  const coverMediaPoster = (formData.get('cover_media_poster') as string || '').trim() || null;
+
   const { errors, sortOrder } = validateMetadata(
     name,
     slug,
@@ -319,6 +335,10 @@ export async function updateInitiativeDraftAction(id: string, formData: FormData
     commercial_badge_id: commercialBadgeId,
     commercial_action_en: commercialActionEn,
     commercial_action_id: commercialActionId,
+    cover_media_type: coverMediaType,
+    cover_media_url: coverMediaUrl,
+    cover_media_focal: coverMediaFocal,
+    cover_media_poster: coverMediaPoster,
   };
 
   const { error: updateErr } = await auth.supabase
@@ -374,6 +394,12 @@ export async function publishInitiativeAction(id: string, formData: FormData): P
   const commercialBadgeId = (formData.get('commercial_badge_id') as string || '').trim().slice(0, 40) || null;
   const commercialActionEn = (formData.get('commercial_action_en') as string || '').trim().slice(0, 40) || null;
   const commercialActionId = (formData.get('commercial_action_id') as string || '').trim().slice(0, 40) || null;
+
+  const rawCoverType = (formData.get('cover_media_type') as string || '').trim().toLowerCase();
+  const coverMediaType = rawCoverType === 'image' || rawCoverType === 'video' ? rawCoverType : null;
+  const coverMediaUrl = (formData.get('cover_media_url') as string || '').trim() || null;
+  const coverMediaFocal = (formData.get('cover_media_focal') as string || '').trim() || 'center';
+  const coverMediaPoster = (formData.get('cover_media_poster') as string || '').trim() || null;
 
   const { errors: baseErrors, sortOrder } = validateMetadata(
     name,
@@ -462,6 +488,10 @@ export async function publishInitiativeAction(id: string, formData: FormData): P
     commercial_badge_id: commercialBadgeId,
     commercial_action_en: commercialActionEn,
     commercial_action_id: commercialActionId,
+    cover_media_type: coverMediaType,
+    cover_media_url: coverMediaUrl,
+    cover_media_focal: coverMediaFocal,
+    cover_media_poster: coverMediaPoster,
     published_at: publishedAt,
   };
 
@@ -531,5 +561,77 @@ export async function deleteInitiativeAction(id: string): Promise<ActionResult> 
   revalidateEcosystemCache({ domain: 'initiatives', id });
 
   return { success: true };
+}
+
+/**
+ * UPLOAD INITIATIVE MEDIA ACTION
+ * Handles uploading image/video assets directly to the 'initiative-media' Supabase Storage bucket.
+ */
+export async function uploadInitiativeMediaAction(
+  formData: FormData
+): Promise<ActionResult<{ url: string; mediaType: 'image' | 'video' }>> {
+  const auth = await verifyOwner();
+  if (!auth.authorized || !auth.user) {
+    return { success: false, error: auth.error || 'Unauthorized' };
+  }
+
+  const file = formData.get('file') as File | null;
+  if (!file) {
+    return { success: false, error: 'No file provided for upload.' };
+  }
+
+  const mimeType = file.type.toLowerCase();
+  let mediaType: 'image' | 'video' | null = null;
+
+  if (['image/jpeg', 'image/png', 'image/webp'].includes(mimeType)) {
+    mediaType = 'image';
+    if (file.size > 5 * 1024 * 1024) {
+      return { success: false, error: 'Image size exceeds the 5 MB limit.' };
+    }
+  } else if (['video/mp4', 'video/webm'].includes(mimeType)) {
+    mediaType = 'video';
+    if (file.size > 25 * 1024 * 1024) {
+      return { success: false, error: 'Video size exceeds the 25 MB limit.' };
+    }
+  } else {
+    return {
+      success: false,
+      error: `Unsupported file format (${mimeType || 'unknown'}). Please upload JPG, PNG, WebP, MP4, or WebM.`,
+    };
+  }
+
+  const extension = file.name.split('.').pop()?.toLowerCase() || (mediaType === 'image' ? 'jpg' : 'mp4');
+  const uniqueName = `initiative-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${extension}`;
+  const filePath = `covers/${uniqueName}`;
+
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  // Use server-side privileged client strictly after verifyOwner authorization check passes
+  const { createAdminClient } = await import('@/lib/supabase/admin');
+  const adminClient = createAdminClient();
+
+  const { error: uploadErr } = await adminClient.storage
+    .from('initiative-media')
+    .upload(filePath, buffer, {
+      contentType: mimeType,
+      upsert: true,
+    });
+
+  if (uploadErr) {
+    return { success: false, error: `Storage upload failed: ${uploadErr.message}` };
+  }
+
+  const { data: publicUrlData } = adminClient.storage
+    .from('initiative-media')
+    .getPublicUrl(filePath);
+
+  return {
+    success: true,
+    data: {
+      url: publicUrlData.publicUrl,
+      mediaType,
+    },
+  };
 }
 

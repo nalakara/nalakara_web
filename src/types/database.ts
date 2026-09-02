@@ -80,6 +80,10 @@ export interface Database {
           commercial_badge_id: string | null;
           commercial_action_en: string | null;
           commercial_action_id: string | null;
+          cover_media_type: string | null;
+          cover_media_url: string | null;
+          cover_media_focal: string | null;
+          cover_media_poster: string | null;
           created_at: string;
           updated_at: string;
           published_at: string | null;
@@ -104,6 +108,10 @@ export interface Database {
           commercial_badge_id?: string | null;
           commercial_action_en?: string | null;
           commercial_action_id?: string | null;
+          cover_media_type?: string | null;
+          cover_media_url?: string | null;
+          cover_media_focal?: string | null;
+          cover_media_poster?: string | null;
           created_at?: string;
           updated_at?: string;
           published_at?: string | null;
@@ -128,6 +136,10 @@ export interface Database {
           commercial_badge_id?: string | null;
           commercial_action_en?: string | null;
           commercial_action_id?: string | null;
+          cover_media_type?: string | null;
+          cover_media_url?: string | null;
+          cover_media_focal?: string | null;
+          cover_media_poster?: string | null;
           created_at?: string;
           updated_at?: string;
           published_at?: string | null;
